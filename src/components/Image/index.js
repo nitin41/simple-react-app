@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {Cropper} from 'react-image-cropper';
 import axios from 'axios';
+
 var Img = React.createClass({
   getInitialState: function () {
     return({imgSrc:"",cropImg:null});
@@ -24,6 +25,11 @@ var Img = React.createClass({
     });
   },
   handleClick(state){
+      axios.get('//localhost:9000/images')
+      .then(response => {
+          this.setState({images: response.data.images})
+          
+      });
       let node = this.refs[state];
       this.setState({
           cropImg: node.crop()
@@ -54,6 +60,10 @@ var Img = React.createClass({
             onChange={this.onChange}/>
          </form>
         </div>
+        {this.state.images ?
+               <img src={this.state.images.doc.image} alt="" width="50"/>
+
+        : null}
         {this.state.imgSrc ?
           <div className="col-xs-4">
             <div className="well">
@@ -66,6 +76,7 @@ var Img = React.createClass({
             </div>
           </div>
         : null}
+
 
 
       </div>

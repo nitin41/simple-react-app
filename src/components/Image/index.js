@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import {Cropper} from 'react-image-cropper';
+import Dexie from 'dexie';
 import axios from 'axios';
 
+const db = new Dexie('ReactSampleDB');
+db.version(1).stores({ images: '++id' });
 var Img = React.createClass({
   getInitialState: function () {
+    db.table('images')
+    .toArray()
+    .then(function(images){
+        console.log(images);
+    });
+    
     return({imgSrc:"",cropImg:null});
   },
   onChange: function(){
@@ -25,11 +34,6 @@ var Img = React.createClass({
     });
   },
   handleClick(state){
-      axios.get('//localhost:9000/images')
-      .then(response => {
-          this.setState({images: response.data.images})
-          
-      });
       let node = this.refs[state];
       this.setState({
           cropImg: node.crop()
@@ -39,6 +43,14 @@ var Img = React.createClass({
         })
         .then(function (response) {
           alert('File saved as ' + response.data.fileName);
+          var image = {
+            image:response.data.fileName
+          };
+          db.table('images')
+          .add(image)
+          .then((id) => {
+            console.log(this.state.images);
+          });
         })
         .catch(function (error) {
           console.log(error);
@@ -60,10 +72,7 @@ var Img = React.createClass({
             onChange={this.onChange}/>
          </form>
         </div>
-        {this.state.images ?
-               <img src={this.state.images.doc.image} alt="" width="50"/>
 
-        : null}
         {this.state.imgSrc ?
           <div className="col-xs-4">
             <div className="well">

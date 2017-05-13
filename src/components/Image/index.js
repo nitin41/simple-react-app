@@ -27,17 +27,19 @@ var Img = React.createClass({
       let node = this.refs[state];
       this.setState({
           cropImg: node.crop()
+      }, () => {
+        axios.post('//localhost:9000/uploadImage', {
+          file:this.state.cropImg
+        })
+        .then(function (response) {
+          alert('File saved as ' + response.data.fileName);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
       });
 
-      axios.post('/uploadImage', {
-        file:this.state.cropImg
-      })
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+
   },
   render:function () {
     return (

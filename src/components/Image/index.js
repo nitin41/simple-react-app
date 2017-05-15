@@ -10,9 +10,9 @@ var Img = React.createClass({
     db.table('images')
     .toArray()
     .then(function(images){
-        console.log(images);
+      this.setState({images});
+      console.log(this.state.images);
     });
-    
     return({imgSrc:"",cropImg:null});
   },
   onChange: function(){
@@ -49,7 +49,8 @@ var Img = React.createClass({
           db.table('images')
           .add(image)
           .then((id) => {
-            console.log(this.state.images);
+            this.setState({ids:id});
+            console.log(this.state.ids);
           });
         })
         .catch(function (error) {
